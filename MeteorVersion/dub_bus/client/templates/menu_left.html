@@ -1,0 +1,100 @@
+
+<!-- Menu list template -->
+<template name="menu_left">
+
+  <div id="id_left_menu" style="height: 100%; width: 100%; overflow: auto;">
+    <ul class="nav nav-pills nav-stacked left-menu">
+      {{#each tracks}}
+
+        <li class="active menu-bar">
+          <a href="#" id="menu_collapser_{{line_num}}" 
+             data-item-to-collapse-id="#menu_item_{{line_num}}"
+             class="js-menu-custom-collapsator" 
+             data-line-num="{{line_num}}" >
+              <input class="text-left" style="margin-right: 14px;" type="checkbox">
+              Line {{line_num}}<span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+          </a>
+          <ul id="menu_item_{{line_num}}"
+              class="menu-custom-item nav nav-pills nav-stacked collapse left-submenu left-menu"
+              data-collapse-controler-id="#menu_collapser_{{line_num}}">
+            <li>
+              <a href="#" id="submenu_collapser_{{line_num}}_1" 
+                 data-item-to-collapse-id="#submenu_item_{{line_num}}_1"
+                 class="js-submenu-custom-collapsator submenu-bar" 
+                 data-line-num="{{line_num}}" 
+                 data-line-direction="from">
+                  <input class="text-left" style="margin-right: 10px;" type="checkbox">
+                  Line {{line_num}}: {{from_route.name}}
+                  <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+              </a>
+              <div id="submenu_item_{{line_num}}_1" 
+                   data-collapse-controler-id="#submenu_collapser_{{line_num}}_1"
+                   data-line-num="{{line_num}}"
+                   data-direction="from"
+                   class="stop-table-menu-div menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
+
+                    <!-- <p> HEERE THE TABLE from</p> -->
+                    {{> menu_stop_table direction="from" }}
+              </div>
+            </li>
+
+
+            <li>
+              <a href="#" id="submenu_collapser_{{line_num}}_2" 
+                 data-item-to-collapse-id="#submenu_item_{{line_num}}_2"
+                 class="js-submenu-custom-collapsator submenu-bar" 
+                 data-line-num="{{line_num}}" 
+                 data-line-direction="to">
+                  <input class="text-left" style="margin-right: 10px;" type="checkbox">
+                  Line {{line_num}}: {{to_route.name}}
+                  <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+              </a>
+              <div id="submenu_item_{{line_num}}_2" 
+                   data-collapse-controler-id="#submenu_collapser_{{line_num}}_2"
+                   data-line-num="{{line_num}}"
+                   data-direction="to"
+                   class="stop-table-menu-div menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
+
+                    <!-- <p> HEERE THE TABLE to </p> -->
+                    {{> menu_stop_table direction="to" }}
+                
+              </div>
+            </li>                            
+
+          </ul>
+      </li>
+
+      {{/each}}
+    </ul>
+  </div>
+
+</template>
+
+
+<!-- Stops table for menu left template -->
+<template name="menu_stop_table">
+
+  <table id="menu_stop_table_{{stops.line_num}}_{{stops.direction}}" 
+         class="table table-bordered table-hover table-condensed "
+         data-line-num="{{stops.line_num}}"
+         data-direction="{{stops.direction}}">
+    <thead>
+        <tr class="warning" data-line-num="{{stops.line_num}}" data-direction="{{stops.direction}}"> 
+            <th class="text-center"> <input type="checkbox" class="js_stop_check_all"></th> 
+            <th class="text-center">Num</th> 
+            <th>Stop name</th> 
+        </tr>
+    </thead>
+    <tbody>
+      
+      {{#each stops.line_stops}}
+        <tr data-stop-num="{{num}}">
+          <td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>
+          <td class="text-center"> {{num}} </td>
+          <td> <a class="js_stop_link" href="#"> {{name}} </a></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  
+</template>

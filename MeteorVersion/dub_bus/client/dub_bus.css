@@ -1,0 +1,27 @@
+html, body {
+    height: 95%;
+    margin: 0;
+    margin-top: 30px;
+    padding: 0;
+}
+
+#map {
+    height: 98%;
+    margin: 5px;
+    border: 1px solid black;
+}
+.brand_icon_navbar {
+    max-height: 20px;
+    max-width: 20px;
+}
+.collapse-arrow {
+    margin-left: 5px;
+}
+
+.menu-custom-item {
+    margin-left: 15px;
+}
+
+.menu-bar { background-color: #F0FAFF; }
+.submenu-bar { background-color: #D0E6FF; }
+.stop-table-menu-div { background-color: #FFFFF9; margin-top: 2px; }

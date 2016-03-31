@@ -1,0 +1,32 @@
+http://www.dublinbus.ie/en/Examples/Google-Map/?routeNumber=1&direction=IO&towards=Sandymount+(St.+John%26%2339%3bs+Church)&from=Santry+(Shanard+Rd.)
+
+http://www.dublinbus.ie/en/
+http://www.dublinbus.ie/en/Examples/Google-Map/?routeNumber=1&amp;direction=IO&amp;towards=Sandymount+(St.+John%26%2339;s+Church)&amp;from=Santry+(Shanard+Rd.)
+http://www.dublinbus.ie/en/Labs.EPiServer/GoogleMap/jscript/gmap.js
+http://www.dublinbus.ie/en/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStops&routeNumber=1&direction=O&towards=Sandymount (St. John&#39;s Church)
+
+
+var getStopsConfig = '/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStops&routeNumber=1&direction=O&towards=Sandymount (St. John&#39;s Church)';//]]>//<![CDATA[
+  var getStopInfoConfig = '/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStopInfo';//]]>
+  
+  
+curl '
+
+
+http://www.dublinbus.ie/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStops&routeNumber=1&direction=O&towards=Sandymount%20(St.%20John&
+http://www.dublinbus.ie/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStops&routeNumber=1&direction=I&towards=Sandymount%20(St.%20John&
+
+
+
+http://www.dublinbus.ie/Examples/Google-Map/?routeNumber=1&direction=IO&towards=Sandymount+(St.+John%26%2339%3bs+Church)&from=Santry+(Shanard+Rd.)
+http://www.dublinbus.ie/Examples/Google-Map/?routeNumber=1&direction=OI&towards=Sandymount+(St.+John%26%2339%3bs+Church)&from=Santry+(Shanard+Rd.)
+
+
+http://www.dublinbus.ie/Labs.EPiServer/GoogleMap/gmap_conf.aspx?
+  custompageid=1219
+  &action=GetStops
+  &routeNumber=1
+  &direction=O
+  &towards=Sandymount%20(St.%20John&
+  
+http://www.dublinbus.ie/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStops&routeNumber=1&direction=O  

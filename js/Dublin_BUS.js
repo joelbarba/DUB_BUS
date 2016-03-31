@@ -18,25 +18,13 @@ var app = (function() {
 
   
   // ------------- Private functions ------------------
-  
-  // Function to create the infoWindow content for each mark
-  var open_stop_infowindow = function(mark) {
-      var ind = mark.stop_index;
-      infowindow.setContent('<div>'
-                            + '<h4>' + stops_obj.bus_stops[ind].num + ' - ' + stops_obj.bus_stops[ind].name + '</h4>'
-                            + '<p>' +  (ind + 1) + 'th stop / ' + stops_obj.bus_stops[ind].gname + '</p>'
-                            + '<p> <a target="_blank" href="' + stops_obj.bus_stops[ind].dub_bus_url + '">DublinBus map</a> <br/>'
-                            + '    <a target="_blank" href="' + stops_obj.bus_stops[ind].gmaps_url + '">View on google maps</a> </p>'                                      
-                            + '</div>');
-      infowindow.open(map, mark);                 
-  };
-  
 
   
   // ------------- Public functions ------------------
   this.ini = function() {
       compile_templates();
       build_menu();
+      stops_obj.ini_all_stops_user_lines();
   };
   
   
@@ -44,6 +32,11 @@ var app = (function() {
       temp_menu       = Handlebars.compile($("#menu-template").html());
       temp_stop_table = Handlebars.compile($("#menu-stop-table-template").html());
       temp_mark_info  = Handlebars.compile($("#stop-marler-info-template").html());
+    
+      Handlebars.registerHelper('ifNotPrimer', function (ind) {
+          if (ind == 0) return "" 
+          else return ",";
+      });    
   };
   
   
@@ -56,40 +49,7 @@ var app = (function() {
       });
 
       infowindow = new google.maps.InfoWindow({});            
-/*
-      for (var t = 0; t < stops_obj.bus_stops.length; t++) {                
-          stop_marker.push(
-              new google.maps.Marker({
-                  position: stops_obj.bus_stops[t].pos,
-                  title: stops_obj.bus_stops[t].num + ' - ' + stops_obj.bus_stops[t].name,
-                  icon: './pole4.png',
-                  animation: google.maps.Animation.DROP,
-                  stop_index: t
-              })
-          );
-          stop_marker[t].addListener('click', function() { open_stop_infowindow(this); });
-      }
 
-      // Draw table with all the stops
-      for (var t = 0; t < stops_obj.bus_stops.length; t++) {
-          // console.log(data_db[t].num + ' - ' + data_db[t].name);
-          $('#menu_table_1_1 tbody').append(
-              '<tr data-index="' + t + '"> '
-              + '<td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>' 
-              + '<td class="text-center"> ' + stops_obj.bus_stops[t].num  + '</td>'
-              + '<td> <a class="js_stop_link" href="#">' + stops_obj.bus_stops[t].name  + '</a></td>'
-              + '</tr>'
-          );
-          $('#menu_table_1_1_rev tbody').append(
-              '<tr data-index="' + t + '"> '
-              + '<td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>' 
-              + '<td class="text-center"> ' + stops_obj.bus_stops[t].num  + '</td>'
-              + '<td> <a class="js_stop_link" href="#">' + stops_obj.bus_stops[t].name  + '</a></td>'
-              + '</tr>'
-          );                
-
-      }
-*/
       stops_obj.ini_all_markers();
 
   }; // <-- End initMap()
@@ -116,22 +76,13 @@ var app = (function() {
   
   
   
-  this.toogle_stop_show = function(stop_info, state) {
-      
-      var stop = stops_obj.get_bus_stop(stop_info.stop_num);
-    
-      if (state) { // show
-          stop.stop_marker.setMap(map);              
-      } else { // hide
-          stop.stop_marker.setMap(null);
-//          infowindow.close();
-      }
-  }
+
 
 
   
   // Show or hide polylines routes on the map
-  this.show_route = function(ind, direction, show) {
+  this.show_route = function(line_num, direction, show) {
+      var ind = get_line_index(line_num);
     
       if (show) {
           if (direction == 'from') {
@@ -253,7 +204,7 @@ var app = (function() {
           var direction = $(event.currentTarget).data('line-direction');
 
           if (event.target.type == 'checkbox') {
-              app.show_route(line_num - 1, direction, $(event.target).prop('checked'));          
+              app.show_route(line_num, direction, $(event.target).prop('checked'));          
           } else {
   //            toogle_menu_item("#line_" + line_num + "_menu_" + direction, event.currentTarget);
               var item_to_collapse = $(event.currentTarget).data('item-to-collapse-id');
@@ -275,7 +226,7 @@ var app = (function() {
             line_num  : $(this).parentsUntil('table').parent().data("line-num"),
             direction : $(this).parentsUntil('table').parent().data("direction")
           };
-          toogle_stop_show(stop_info, $(this).prop('checked'));
+          stops_obj.toogle_stop_show(stop_info, $(this).prop('checked'));
       });
       $('.js_stop_link').click(function(event) {
           var stop_info = {
@@ -287,7 +238,7 @@ var app = (function() {
           var chk = $(this).parentsUntil('tr').siblings().find('input.js_stop_check')[0];
           $(chk).prop('checked', true); // do not toggle, always set true
 
-          toogle_stop_show(stop_info, $(chk).prop('checked'));
+          stops_obj.toogle_stop_show(stop_info, $(chk).prop('checked'));
           if ($(chk).prop('checked')) {
               map.panTo( stops_obj.get_bus_stop(stop_info.stop_num).pos );
 //              open_stop_infowindow(stop_marker[i]);
@@ -309,7 +260,7 @@ var app = (function() {
                     direction : $(elem).parentsUntil('table').parent().data("direction")
                   };                
                   $(elem).prop('checked', chk_val);
-                  toogle_stop_show(stop_info, chk_val);
+                  stops_obj.toogle_stop_show(stop_info, chk_val);
               });
       });    
   };

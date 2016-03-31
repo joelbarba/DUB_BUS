@@ -16,9 +16,8 @@
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-sU_iXfll35fohb_goUYnNyqf8FSP9wg&callback=initMap"></script>
     <script src="js/lib/handlebars-v3.0.3.js"></script>
 
-    <script src="js/bus_tracks.js"></script>
-    <script src="js/bus_stops.js"></script>
-    <script src="js/Dublin_BUS.js"></script>
+<!--    <script src="js/bus_tracks.js"></script>-->
+    <script src="js/bus_editor.js"></script>
 
 	<style>
       html, body {
@@ -226,7 +225,8 @@
 
   <!-- Menu list template -->
   <script id="menu-template" type="text/x-handlebars-template">
-    
+      <button id="bshow_obj"  value="">SHOW STOPS OBJ</button>
+      <button id="bshow_obj2" value="">SHOW TRACKS OBJ</button>
       <div id="id_left_menu" style="height: 100%; width: 100%; overflow: auto;">
         <ul class="nav nav-pills nav-stacked left-menu">
           {{#each bus_tracks}}
@@ -256,7 +256,7 @@
                        data-collapse-controler-id="#submenu_collapser_{{line_num}}_1"
                        data-line-num="{{line_num}}"
                        data-direction="from"
-                       class="stop-table-menu-div menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
+                       class="menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
 
                         <!-- Here the table from -->
 
@@ -278,7 +278,7 @@
                        data-collapse-controler-id="#submenu_collapser_{{line_num}}_2"
                        data-line-num="{{line_num}}"
                        data-direction="to"
-                       class="stop-table-menu-div menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
+                       class="menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
 
                         <!-- Here the table to -->  
                     
@@ -296,43 +296,43 @@
 
   
   
-<!-- Stops table for menu template -->
- <script id="menu-stop-table-template" type="text/x-handlebars-template">
-   
-     <table id="menu_stop_table_{{line_num}}_{{direction}}" 
-            class="table table-bordered table-hover table-condensed "
-            data-line-num="{{line_num}}"
-            data-direction="{{direction}}">
-       <thead>
-           <tr class="warning" data-line-num="{{line_num}}" data-direction="{{direction}}"> 
-               <th class="text-center"> <input type="checkbox" class="js_stop_check_all"></th> 
-               <th class="text-center">Num</th> 
-               <th>Stop name</th> 
-           </tr>
-       </thead>
-       <tbody>
-         
-         {{#each stops}}
-           <tr data-stop-num="{{num}}">
-             <td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>
-             <td class="text-center"> {{num}} </td>
-             <td> <a class="js_stop_link" href="#"> {{name}} </a></td>
-           </tr>
-         {{/each}}
-       </tbody>
-     </table>
-   
-</script>  
+ <!-- Stops table for menu template -->
+  <script id="menu-stop-table-template" type="text/x-handlebars-template">
+    
+      <table id="menu_stop_table_{{line_num}}_{{direction}}" 
+             class="table table-bordered table-hover table-condensed stop-table-menu-div"
+             data-line-num="{{line_num}}"
+             data-direction="{{direction}}">
+        <thead>
+            <tr class="warning" data-line-num="{{line_num}}" data-direction="{{direction}}"> 
+                <th class="text-center"> <input type="checkbox" class="js_stop_check_all"></th> 
+                <th class="text-center">Num</th> 
+                <th>Stop name</th> 
+            </tr>
+        </thead>
+        <tbody>
+          
+          {{#each stops}}
+            <tr data-stop-num="{{num}}">
+              <td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>
+              <td class="text-center"> {{num}} </td>
+              <td> <a class="js_stop_link" href="#"> {{name}} </a></td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    
+  </script>  
   
   
   <!-- Stop marker info -->
   <script id="stop-marler-info-template" type="text/x-handlebars-template">
-    
+      
       <div>
         <h4>{{ title }}</h4>
         <p> {{ gname }} </p>
         <p> <b>Stop lines:</b> {{#each line_stops}}{{#ifNotPrimer @index}}{{/ifNotPrimer}} {{num}}{{/each}} </p>
-<!--        <p> <a target="_blank" href="{{dub_bus_url}}">DublinBus map</a> <br/>-->
+        <p> <a target="_blank" href="{{dub_bus_url}}">DublinBus map</a> <br/>
             <a target="_blank" href="{{gmaps_url}}">View on google maps</a>
         </p>
       </div>
