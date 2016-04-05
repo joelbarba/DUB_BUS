@@ -108,6 +108,7 @@ this.app = (function() {
 
       // stops_obj.ini_all_markers();
       this.stop_markers.ini_markers();
+      this.stop_markers.ini_tracks();
 
       console.log('The maps is loaded');
   };
@@ -248,7 +249,7 @@ this.app = (function() {
 
 
 
-
+/*
 
   // This is to replicate the data of the DB Collections, crossing bus_stops and bus_tracks
   this.data_replication = function() {
@@ -327,7 +328,7 @@ this.app = (function() {
     }
   };
 
-
+*/
 
 
 // Object to control markers on the map
@@ -435,6 +436,116 @@ this.stop_markers = (function() {
   return this;
 
 }());  // <-- End stop_markers
+
+
+
+
+// ---------------------------------------------------------------------
+
+
+
+// Object to control lines (tracks) on the map
+this.map_polylines = (function() {
+
+  this.tracks = [];    // Array to store each line track on the map
+
+  // Return the marker bound to the line which has this ID
+  this.get_track_by_id = function(line_id) {
+    for (var t = 0; t < this.tracks.length; t++) {
+      if (this.tracks[t].track_info.line_id == line_id) { return this.tracks[t]; break; }
+    }
+    return null;
+  };
+
+
+  // Return the marker bound to the stop which has this stop NUM
+  this.get_track_by_num = function(line_num) {
+    for (var t = 0; t < this.tracks.length; t++) {
+      if (this.tracks[t].track_info.line_num == line_num) { return this.tracks[t]; break; }
+    }
+    return null;
+  };
+
+
+  // Return the marker in the ind position
+  this.get_track_by_index = function(ind) {
+    if (this.tracks[ind]) return this.tracks[ind];
+    else return null;
+  };
+
+
+  // Return the track index of the from route bound to the line which has this line_id
+  this.get_from_track_index_by_id = function(line_id) {
+    for (var t = 0; t < this.tracks.length; t++) {
+      if (this.tracks[t].track_info.direction == 'from') {
+        if (this.tracks[t].track_info.line_id == line_id) { return t; break; }
+      }
+    }
+    return null;
+  };
+  this.get_to_track_index_by_id = function(line_id) {
+    for (var t = 0; t < this.tracks.length; t++) {
+      if (this.tracks[t].track_info.direction == 'to') {
+        if (this.tracks[t].track_info.line_id == line_id) { return t; break; }
+      }
+    }
+    return null;
+  };
+
+  this.show_track_by_index = function(ind) {
+    if (this.tracks[ind]) this.tracks[ind].setMap(map);
+  };
+
+  this.hide_track_by_index = function(ind) {
+    if (this.tracks[ind]) this.tracks[ind].setMap(null);
+  };
+
+
+  this.ini_tracks = function() {
+    console.log('ini tracks');
+ 
+    bus_tracks.find({}, { num: 1 }).forEach(function(bus_track) {
+
+      // Create the polyline for the track
+      track_obj = new google.maps.Polyline({
+          path          : bus_track.from_route.track,
+          geodesic      : true,
+          strokeColor   : '#0000FF',
+          strokeOpacity : 0.8,
+          strokeWeight  : 4,
+          track_info    : {
+            line_id   : bus_track._id,
+            line_num  : bus_track.line_num,
+            direction : 'from',
+            name      : bus_track.from_route.name
+          }
+        });
+      this.tracks.push(track_obj);
+
+      track_obj = new google.maps.Polyline({
+          path          : bus_track.to_route.track,
+          geodesic      : true,
+          strokeColor   : '#0000FF',
+          strokeOpacity : 0.8,
+          strokeWeight  : 4,
+          track_info    : {
+            line_id   : bus_track._id,
+            line_num  : bus_track.line_num,
+            direction : 'to',
+            name      : bus_track.to_route.name
+          }
+        });
+      this.tracks.push(track_obj);
+
+    });
+
+  };
+
+
+  return this;
+
+}());  // <-- End map_polylines
+
 
 
 

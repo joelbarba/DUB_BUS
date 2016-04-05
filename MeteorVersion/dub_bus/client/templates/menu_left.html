@@ -22,6 +22,7 @@
                  data-item-to-collapse-id="#submenu_item_{{line_num}}_1"
                  class="js-submenu-custom-collapsator submenu-bar" 
                  data-line-num="{{line_num}}" 
+                 data-line-index="{{from_route.track_index}}"
                  data-line-direction="from">
                   <input class="text-left" style="margin-right: 10px;" type="checkbox">
                   Line {{line_num}}: {{from_route.name}}
@@ -33,7 +34,7 @@
                    data-direction="from"
                    class="stop-table-menu-div menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
 
-                    <!-- <p> HEERE THE TABLE from</p> -->
+                    <!-- <p> HEERE THE TABLE from {{from_route.track_index}} </p> -->
                     {{> menu_stop_table direction="from" }}
               </div>
             </li>
@@ -44,6 +45,7 @@
                  data-item-to-collapse-id="#submenu_item_{{line_num}}_2"
                  class="js-submenu-custom-collapsator submenu-bar" 
                  data-line-num="{{line_num}}" 
+                 data-line-index="{{to_route.track_index}}"
                  data-line-direction="to">
                   <input class="text-left" style="margin-right: 10px;" type="checkbox">
                   Line {{line_num}}: {{to_route.name}}
@@ -55,7 +57,7 @@
                    data-direction="to"
                    class="stop-table-menu-div menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
 
-                    <!-- <p> HEERE THE TABLE to </p> -->
+                    <!-- <p> HEERE THE TABLE to {{to_route.track_index}}</p> -->
                     {{> menu_stop_table direction="to" }}
                 
               </div>
