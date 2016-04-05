@@ -2,8 +2,8 @@
 Meteor.startup(function () {
     // code to run on server at startup
 
-    if (!bus_stops.findOne()) {
-        console.log("Initialize bus_stops collection.");
+  if (!bus_stops.findOne()) {
+    console.log("Initialize bus_stops collection.");
 
 		bus_stops.insert(
 			{ num        : 10, 
@@ -133,7 +133,7 @@ Meteor.startup(function () {
 
 
 	
-    };
+  };
 
 
   if (!bus_tracks.findOne()) {
@@ -563,7 +563,7 @@ Meteor.startup(function () {
 		{ line_num   : 16,
 		  name       : 'AQUESTA', 
 		  from_route : {
-		    name         : 'xxxxxxxx',
+		    name         : 'From Brehon to Airport',
 		    dub_bus_url  : 'xxxxxxxx',
 		    stop_ini     : 0,
 		    stop_end     : 0,
@@ -1019,7 +1019,7 @@ Meteor.startup(function () {
 		    ]
 		  },
 		  to_route       : {
-		    name         : 'xxxxxxxx',
+		    name         : 'From Airport to Brehon',
 		    dub_bus_url  : 'xxxxxxxx',
 		    stop_ini     : 0,
 		    stop_end     : 0,
@@ -1035,5 +1035,7 @@ Meteor.startup(function () {
 	Meteor.publish('all-bus-stops', function publishFunction() {
 	   return bus_stops.find({});
 	});
+
+  data_replication2();
     
 });

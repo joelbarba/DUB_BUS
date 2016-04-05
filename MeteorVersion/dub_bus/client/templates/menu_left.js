@@ -176,46 +176,12 @@ Template.menu_stop_table.events({
 
           var marker = app.stop_markers.get_marker_by_index(stop_info.marker_index);
           app.stop_markers.open_stop_infowindow(marker);
-
-          // // Find the bounded marker
-          // all_markers.forEach(function(elem) {
-          //     // console.log(Date.now());
-          //     if (elem.stop_info.line_num == stop_info.line_num && elem.stop_info.direction == stop_info.direction) {
-          //         open_stop_infowindow(elem);
-          //         return false;
-          //     } else {
-          //         return true;
-          //     }
-          // });          
+      
       }
       return false;
 
   }
 
-
-/*
-
-      $('.js_stop_link').click(function(event) {
-          var stop_info = {
-            stop_num  : $(this).parentsUntil('tr').parent().data("stop-num"),
-            line_num  : $(this).parentsUntil('table').parent().data("line-num"),
-            direction : $(this).parentsUntil('table').parent().data("direction"),
-          };
-//          var stop_num = $(this).parent().parent().data("stop-num");
-          var chk = $(this).parentsUntil('tr').siblings().find('input.js_stop_check')[0];
-          $(chk).prop('checked', true); // do not toggle, always set true
-
-          stops_obj.toogle_stop_show(stop_info, $(chk).prop('checked'));
-          if ($(chk).prop('checked')) {
-              map.panTo( stops_obj.get_bus_stop(stop_info.stop_num).pos );
-//              open_stop_infowindow(stop_marker[i]);
-          }
-          return false;
-      });
-
-
-
-*/
 
 
 
@@ -262,66 +228,6 @@ this.menu = (function() {
   
 
   
-
-  
-  /*
-  
-  // Link events to the menu table stops
-  this.bind_menu_table_events = function() {
-    
-      $('.js_stop_check').click(function(event) {
-          var stop_info = {
-            stop_num     : $(this).parentsUntil('tr').parent().data("stop-num"),
-            line_num     : $(this).parentsUntil('table').parent().data("line-num"),
-            direction    : $(this).parentsUntil('table').parent().data("direction"),
-            marker_index : $(this).parentsUntil('tr').parent().data("marker-index")
-          };
-          // stops_obj.toogle_stop_show(stop_info, $(this).prop('checked'));
-
-
-      });
-
-
-      $('.js_stop_link').click(function(event) {
-          var stop_info = {
-            stop_num  : $(this).parentsUntil('tr').parent().data("stop-num"),
-            line_num  : $(this).parentsUntil('table').parent().data("line-num"),
-            direction : $(this).parentsUntil('table').parent().data("direction"),
-          };
-//          var stop_num = $(this).parent().parent().data("stop-num");
-          var chk = $(this).parentsUntil('tr').siblings().find('input.js_stop_check')[0];
-          $(chk).prop('checked', true); // do not toggle, always set true
-
-          stops_obj.toogle_stop_show(stop_info, $(chk).prop('checked'));
-          if ($(chk).prop('checked')) {
-              map.panTo( stops_obj.get_bus_stop(stop_info.stop_num).pos );
-//              open_stop_infowindow(stop_marker[i]);
-          }
-          return false;
-      });
-
-
-      $('.js_stop_check_all').click(function(event) {
-          var stop_info = {
-            stop_num  : null,
-            line_num  : $(this).parentsUntil('table').parent().data("line-num"),
-            direction : $(this).parentsUntil('table').parent().data("direction"),
-          };
-          var chk_val = $(this).prop('checked');
-          $('#menu_stop_table_' + stop_info.line_num + '_' + stop_info.direction + ' tbody input.js_stop_check').each(
-              function(index, elem) { 
-                  var stop_info = {
-                    stop_num  : $(elem).parentsUntil('tr').parent().data("stop-num"),
-                    line_num  : $(elem).parentsUntil('table').parent().data("line-num"),
-                    direction : $(elem).parentsUntil('table').parent().data("direction")
-                  };                
-                  $(elem).prop('checked', chk_val);
-                  stops_obj.toogle_stop_show(stop_info, chk_val);
-              });
-      });    
-  };
-    
-*/
   
   return this;
   
