@@ -1,0 +1,7 @@
+{
+  "galaxy.meteor.com": {
+    "env": {
+      "MONGO_URL": "mongodb://dub_bus_usr:th3pass00@ds013320.mlab.com:13320/dub_bus_db"
+    }
+  }
+}

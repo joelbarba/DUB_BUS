@@ -113,6 +113,9 @@ this.app = (function() {
   };
 
 
+
+
+/*
   // Makes the stop bus icon appears or desappears on the map
   this.toogle_stop_show = function(stop_info, next_state) {
 
@@ -169,14 +172,14 @@ this.app = (function() {
         
       }
   };
-
+*/
 
 
 
 
 
   
-  
+  /*
   // Return the line index position into the bus_tracks array (of the line_num)
   this.get_line_index = function(line_num) {
     var ind = -1;
@@ -193,7 +196,7 @@ this.app = (function() {
     if (ind != null)  return bus_tracks[ind];
     else              return null;
   }
-  
+  */
   
   
 
@@ -385,7 +388,7 @@ this.stop_markers = (function() {
               position   : stop.pos,
               title      : stop.num + ' - ' + stop.name,
               icon       : 'pole4.png',
-              // animation  : google.maps.Animation.DROP,
+              animation  : google.maps.Animation.DROP,
               stop_info  : {
                 stop_id   : stop._id,
                 stop_num  : stop.num
