@@ -88,10 +88,10 @@
     <tbody>
       
       {{#each stops.line_stops}}
-        <tr data-stop-num="{{num}}">
+        <tr data-stop-num="{{stop_num}}" data-marker-index="{{marker_index}}">
           <td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>
-          <td class="text-center"> {{num}} </td>
-          <td> <a class="js_stop_link" href="#"> {{name}} </a></td>
+          <td class="text-center"> {{stop_num}} </td>
+          <td> <a class="js_stop_link" href="#"> {{stop_name}} </a></td>
         </tr>
       {{/each}}
     </tbody>

@@ -13,7 +13,8 @@ Router.route('/', {
   layoutTemplate : 'Main_template',
   yieldRegions   : {
     'navbar'          : { to: 'navbar' },
-    'loading_screen'  : { to: 'main'   }
+    'loading_screen'  : { to: 'main'   },
+    'loading_screen'  : { to: 'menu_left_place' }
   },
   waitOn: function() {
     console.log('waiting for loading dependences');
@@ -30,9 +31,13 @@ Router.route('/', {
     if (this.ready() ) {
       console.log('Rendering the principal screen');
       this.render('principal_screen', { to : "main" });
-      Template.principal_screen.rendered = function() {
+      
+      // Template.principal_screen.rendered = function() {
+      Template.principal_screen.rendered = () => { // arrow function to keep the this
         console.log('Loading the Map in the principal screen');
         app.loadMap();
+        // app.data_replication();
+        this.render('menu_left', { to : "menu_left_place" });
       };
     }
   }

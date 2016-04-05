@@ -5,7 +5,19 @@ Meteor.startup(function () {
     if (!bus_stops.findOne()) {
         console.log("Initialize bus_stops collection.");
 
-		bus_stops.insert({ num : 10, name : 'Parnell Square', user_lines : [], gname : '', pos : { lat: 53.353387 , lng: -6.265384 }, stop_marker  : null, gmaps_url    : '' });
+		bus_stops.insert(
+			{ num        : 10, 
+			  name 	     : 'Parnell Square', 
+			  user_lines : [{ stop_num: 1, direction: 'from' },
+                      { stop_num: 1, direction:   'to' },
+                      { stop_num: 2, direction: 'from' },
+                      { stop_num: 2, direction:   'to' }
+                     ], 
+			  gname      : '', 
+			  pos 	     : { lat: 53.353387 , lng: -6.265384 }, 
+			  gmaps_url  : '' 
+      });
+
 		bus_stops.insert({ num : 12, name : 'Dorset St', user_lines : [], gname : '', pos : { lat: 53.356789 , lng: -6.264623 }, stop_marker  : null, gmaps_url    : '' });
 		bus_stops.insert({ num : 14, name : 'Dorset St', user_lines : [], gname : '', pos : { lat: 53.358537 , lng: -6.262724 }, stop_marker  : null, gmaps_url    : '' });
 		bus_stops.insert({ num : 15, name : 'Dorset St', user_lines : [], gname : '', pos : { lat: 53.360251 , lng: -6.260973 }, stop_marker  : null, gmaps_url    : '' });
@@ -124,11 +136,11 @@ Meteor.startup(function () {
     };
 
 
-    if (!bus_tracks.findOne()) {
-        console.log("Initialize bus_track collection.");
+  if (!bus_tracks.findOne()) {
+    console.log("Initialize bus_track collection.");
 
 
-        bus_tracks.insert(
+    bus_tracks.insert(
 		{ line_num   : 1,
 		  name       : 'Santry / Sandymount',
 		  from_route : {
@@ -137,6 +149,50 @@ Meteor.startup(function () {
 		    stop_ini     : 226,
 		    stop_end     : 3800,
 		    map_polyline : null,
+        stops        : [
+          { stop_num:  226 },
+          { stop_num:  228 },
+          { stop_num:  229 },
+          { stop_num:  227 }, 
+          { stop_num:  230 },
+          { stop_num:  231 },
+          { stop_num: 1641 },
+          { stop_num: 1642 },
+          { stop_num:  213 },
+          { stop_num:  214 },
+          { stop_num: 4432 },
+          { stop_num:  119 },
+          { stop_num:   44 },
+          { stop_num: 7603 },
+          { stop_num:   45 },
+          { stop_num:   46 },
+          { stop_num:   47 },
+          { stop_num:   48 },
+          { stop_num:   49 },
+          { stop_num:   51 },
+          { stop_num:   52 },
+          { stop_num:  265 },
+          { stop_num:  271 },
+          { stop_num:  340 },
+          { stop_num:  350 },
+          { stop_num:  351 },
+          { stop_num:  352 },
+          { stop_num:  353 },
+          { stop_num:  354 },
+          { stop_num:  355 },
+          { stop_num:  356 },
+          { stop_num:  357 },
+          { stop_num:  390 },
+          { stop_num:  372 },
+          { stop_num:  373 },
+          { stop_num:  374 },
+          { stop_num:  375 },
+          { stop_num: 2804 },
+          { stop_num:  376 },
+          { stop_num:  377 },
+          { stop_num:  378 },
+          { stop_num: 3800 }
+        ],
 		    track        : [
 		    { lat: 53.391182789780610, lng: -6.2621855735778810,  stop_num:  226 },
 		    { lat: 53.391198785088490, lng: -6.2624108791351320 },

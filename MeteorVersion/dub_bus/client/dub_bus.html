@@ -61,7 +61,7 @@
     <div class="row">
         <div style="border: 2px solid red; height: 800px;" class="col-md-3">
             <div id="id_left_menu" style="height: 100%; width: 100%; overflow: auto;">
-                {{> menu_left}}
+                {{> yield "menu_left_place"}}
             </div>
           </div>    
           <div style="border: 2px solid red; height: 800px;" class="col-md-9">
@@ -71,6 +71,21 @@
   </div>    
 </template>
 
+
+
+<!-- Stop marker info -->
+<template name="stop-marler-info-template">
+  <!-- 
+    <div>
+      <h4>{{ title }}</h4>
+      <p> {{ gname }} </p>
+      <p> <b>Stop lines:</b> {{#each line_stops}}{{#ifNotPrimer @index}}{{/ifNotPrimer}} {{num}}{{/each}} </p>
+        <p> <a target="_blank" href="{{dub_bus_url}}">DublinBus map</a> <br/>
+          <a target="_blank" href="{{gmaps_url}}">View on google maps</a>
+      </p>
+    </div> -->
+  
+</template>    
 
 
 

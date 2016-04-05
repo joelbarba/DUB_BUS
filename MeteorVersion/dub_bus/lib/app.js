@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 this.app = (function() {
   // Mètodes i variables privades globals de l'aplicació
   var _version = 1;
@@ -15,6 +22,7 @@ this.app = (function() {
   this.map = null;          // Google Map object
   this.infowindow  = null;  // info window attatched to each marker of the map
   this.all_markers = [];    // Array to store each marker on the map
+  
   // this.map_loaded = false;
 
   
@@ -88,15 +96,20 @@ this.app = (function() {
 
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 53.338612161783750, lng: -6.2230440974235535},
-        zoom: 14,
+        zoom: 15,
+        draggable: true,
+        scrollwheel: true,
+        disableDefaultUI: false,
+        // keyboardShortcuts: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
-      infowindow = new google.maps.InfoWindow({});            
+      infowindow = new google.maps.InfoWindow({});
+
+      // stops_obj.ini_all_markers();
+      this.stop_markers.ini_markers();
 
       console.log('The maps is loaded');
-      // stops_obj.ini_all_markers();
-
   };
 
 
@@ -109,14 +122,24 @@ this.app = (function() {
 
       if (!next_state) {
 
-        // Look up the marker
-        all_markers.forEach(function(elem) {
-            console.log(elem);
-            if (stop._id == elem.bus_stop_id) {
-              // if ( map.getBounds().contains(elem.getPosition()) ) 
-              elem.setMap(null);
-            }
-        });
+        console.log('delete stop_info');
+        console.log(stop_info);
+
+        if (stop_info.marker_index) {
+          all_markers[stop_info.marker_index].setMap(null);
+        } else {
+          // Look up the marker
+          all_markers.forEach(function(elem) {
+              // console.log(elem);
+              if (elem.stop_info.stop_id == stop._id) {
+                // if ( map.getBounds().contains(elem.getPosition()) )  
+                  elem.setMap(null);
+              }
+          });
+          
+        }
+
+        return 0;
 
       } else {
 
@@ -127,21 +150,25 @@ this.app = (function() {
                 title      : stop.num + ' - ' + stop.name,
                 icon       : 'pole4.png',
                 // animation  : google.maps.Animation.DROP,
-                stop_index : 0,
-                bus_stop_id: stop._id
+                stop_info  : {
+                  stop_id   : stop._id,
+                  stop_num  : stop_info.stop_num,
+                  line_num  : stop_info.line_num,
+                  direction : stop_info.direction
+                }
             });
 
         stop_marker.setMap(map);
         stop_marker.addListener('click', function() { 
-          // open_stop_infowindow(this); 
-          console.log('open info window');
+          open_stop_infowindow(this); 
+          // console.log('open info window');
         });
 
         all_markers.push(stop_marker);
-
+        return all_markers.length -1;
         
       }
-  }
+  };
 
 
 
@@ -206,8 +233,215 @@ this.app = (function() {
   
 
 
+
+
+
+
+
+
+
+  /// DATA NORMALIZATION / REPLICATION
+
+
+
+
+
+
+  // This is to replicate the data of the DB Collections, crossing bus_stops and bus_tracks
+  this.data_replication = function() {
+
+      // Truncate all replicated data
+      bus_stops.find({}).forEach(function(bus_stop) {
+        bus_stop.user_lines = new Array(0);
+        bus_stops.update({ _id : bus_stop._id }, bus_stop);
+      });
+
+
+      bus_tracks.find({}).forEach(function(bus_line) {
+
+        bus_line.from_route.stops = new Array(0);
+        bus_line.to_route.stops = new Array(0);
+
+
+        // Loop all track points, seeking the stops ones
+
+        // From track
+        bus_line.from_route.track.forEach(function(track_point) {
+          fun_set_stop_on_track_point(track_point, bus_line.from_route, bus_line, 'from');
+        });
+
+        // To track
+        bus_line.to_route.track.forEach(function(track_point) {
+          fun_set_stop_on_track_point(track_point, bus_line.to_route, bus_line, 'to');
+        });
+
+
+        // Set stop_ini / stop_end
+        if (bus_line.from_route.stops.length > 0) {
+          bus_line.from_route.stop_ini = bus_line.from_route.stops[0].stop_num;
+          bus_line.from_route.stop_end = bus_line.from_route.stops[bus_line.from_route.stops.length - 1].stop_num;
+        }
+
+        if (bus_line.to_route.stops.length > 0) {
+          bus_line.to_route.stop_ini = bus_line.to_route.stops[0].stop_num;
+          bus_line.to_route.stop_end = bus_line.to_route.stops[bus_line.to_route.stops.length - 1].stop_num;
+        }        
+
+        // Save the line
+        bus_tracks.update({ _id : bus_line._id }, bus_line);
+
+      })
+
+      console.log('data replication done!');
+
+  };
+
+
+  var fun_set_stop_on_track_point = function(track_point, route, bus_line, direction) {
+
+    if (track_point.hasOwnProperty('stop_num')) {
+
+      var bus_stop = bus_stops.findOne({ num: track_point.stop_num });
+      if (bus_stop) {
+
+        // Set the same position (stop <- track)
+        bus_stop.pos.lat = track_point.lat;
+        bus_stop.pos.lng = track_point.lng;
+
+        // Add the stop to the line
+        route.stops.push({
+            stop_num   : bus_stop.num,
+            stop_name  : bus_stop.name
+          });
+
+        // Add the line to the stop
+        bus_stop.user_lines.push({
+          line_num  : bus_line.line_num, 
+          direction : direction
+        });
+        bus_stops.update({ _id : bus_stop._id }, bus_stop);
+      }
+    }
+  };
+
+
+
+
+// Object to control markers on the map
+this.stop_markers = (function() {
+
+  this.marker_list = [];    // Array to store each stop marker on the map
+
+  // Return the marker bound to the stop which has this ID
+  this.get_marker_by_id = function(stop_id) {
+    for (var t = 0; t < this.marker_list.length; t++) {
+      if (this.marker_list[t].stop_info.stop_id == stop_id) { return this.marker_list[t]; break; }
+    }
+    return null;
+  };
+
+
+  // Return the marker bound to the stop which has this stop NUM
+  this.get_marker_by_num = function(stop_num) {
+    for (var t = 0; t < this.marker_list.length; t++) {
+      if (this.marker_list[t].stop_info.stop_num == stop_num) { return this.marker_list[t]; break; }
+    }
+    return null;
+  };
+
+
+  // Return the marker in the ind position
+  this.get_marker_by_index = function(ind) {
+    if (this.marker_list[ind]) return this.marker_list[ind];
+    else return null;
+  };
+
+
+  // Return the marker index of the marker bound to the stop which has this stop NUM
+  this.get_marker_index_by_num = function(stop_num) {
+    for (var t = 0; t < this.marker_list.length; t++) {
+      if (this.marker_list[t].stop_info.stop_num == stop_num) { return t; break; }
+    }
+    return null;
+  };
+
+  this.show_marker_by_index = function(ind) {
+    if (this.marker_list[ind]) this.marker_list[ind].setMap(map);
+  };
+
+  this.hide_marker_by_index = function(ind) {
+    if (this.marker_list[ind]) this.marker_list[ind].setMap(null);
+  };
+
+
+  this.ini_markers = function() {
+    console.log('ini stop_markers');
+ 
+    bus_stops.find({}, { num: 1 }).forEach(function(stop) {
+
+      // Create and show the mark of the stop
+      var stop_marker = 
+          new google.maps.Marker({
+              position   : stop.pos,
+              title      : stop.num + ' - ' + stop.name,
+              icon       : 'pole4.png',
+              // animation  : google.maps.Animation.DROP,
+              stop_info  : {
+                stop_id   : stop._id,
+                stop_num  : stop.num
+              }
+          });
+
+      // stop_marker.setMap(map);
+      stop_marker.addListener('click', function() { 
+        app.stop_markers.open_stop_infowindow(this); 
+        // console.log('open info window');
+      });
+
+      this.marker_list.push(stop_marker);
+
+    });
+
+  };
+
+  // Create the info window for the stop marker
+  this.open_stop_infowindow = function(that) {
+      // console.log(that);
+
+      var stop = bus_stops.findOne({num: that.stop_info.stop_num});
+
+      var lines_info = '';
+      for (var t = 0; t < stop.user_lines.length; t++) {
+        if (t > 0) lines_info += ', ';
+        lines_info += stop.user_lines[t].line_num;
+      }
+
+      var temp = 
+          '<div>'
+            + '<h4>' + stop.name + '</h4>'
+            + '<p>' + stop.gname + '</p>'
+            + '<p> <b>Stop lines:</b> ' + lines_info + '</p>'
+            +   '<a target="_blank" href="' + that.gmaps_url + '">View on google maps</a>'
+            +'</p>'
+          + '</div>';
+
+      app.infowindow.setContent(temp);
+      app.infowindow.open(app.map, that); 
+  };  
+
+  return this;
+
+}());  // <-- End stop_markers
+
+
+
+
+
   
   return this;
   
 }());  // <-- End app
+
+
+
 
