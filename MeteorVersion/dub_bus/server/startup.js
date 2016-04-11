@@ -8,11 +8,11 @@ Meteor.startup(function () {
 		bus_stops.insert(
 			{ num        : 10, 
 			  name 	     : 'Parnell Square', 
-			  user_lines : [{ stop_num: 1, direction: 'from' },
-                      { stop_num: 1, direction:   'to' },
-                      { stop_num: 2, direction: 'from' },
-                      { stop_num: 2, direction:   'to' }
-                     ], 
+			  user_lines : [{ stop_num: 1, direction: 'from', track_index: 999 },
+		                  { stop_num: 1, direction:   'to', track_index: 999 },
+		                  { stop_num: 2, direction: 'from', track_index: 999 },
+		                  { stop_num: 2, direction:   'to', track_index: 999 }
+		                 ], 
 			  gname      : '', 
 			  pos 	     : { lat: 53.353387 , lng: -6.265384 }, 
 			  gmaps_url  : '' 
@@ -1036,6 +1036,6 @@ Meteor.startup(function () {
 	   return bus_stops.find({});
 	});
 
-  data_replication2();
+  data_replication();
     
 });

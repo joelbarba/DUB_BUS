@@ -43,8 +43,9 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li id="nav_bar_home_link" class="active"><a href="/">Home</a></li>
+          <li id="nav_bar_home_link" class="js-user-toggle active"><a href="/">Home</a></li>
           <li id="nav_bar_home_link" class="js-admin-toggle"><a href="#">Admin</a></li>
+          {{ admin_mode_on.am }}
         </ul>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

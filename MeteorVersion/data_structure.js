@@ -29,10 +29,10 @@ app.all_markers = [
 bus_stops = [
   { num        : 10, 
     name 	     : 'Parnell Square', 
-    user_lines* : [{ line_num: 1, direction: 'from' },
-                  { line_num: 1, direction:   'to' },
-                  { line_num: 2, direction: 'from' },
-                  { line_num: 2, direction:   'to' }
+    user_lines* : [{ line_num: 1, direction: 'from', line_id: xx, track_index: 999 },
+                   { line_num: 1, direction:   'to', line_id: xx, track_index: 999 },
+                   { line_num: 2, direction: 'from', line_id: xx, track_index: 999 },
+                   { line_num: 2, direction:   'to', line_id: xx, track_index: 999 }
                  ], 
     gname      : '', 
     pos 	     : { lat: 53.353387 , lng: -6.265384 },

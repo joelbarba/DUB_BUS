@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> -->
+
+  
+    <script src="js/lib/jquery.js"></script>
+<!--    <script src="js/lib/angular.js"></script>-->
+<!--    <script src="js/lib/angular-route.js"></script>-->
+<!--    <script src="js/lib/angular-css.js"></script>-->
+<!--    <script data-main="scripts/main" src="scripts/require.js"></script>-->
+<!--    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script> -->
+
+  <script>
+
+
+  
+  
+    $(document).ready(function() {
+
+      console.log('ini');
+
+
+      function CircleClass1(radius) { 
+          this.radius = radius;
+          CircleClass1.circlesMade++; 
+      }
+
+      CircleClass1.draw = function draw(circle, canvas) { /* Canvas drawing code */ }
+
+      Object.defineProperty(CircleClass1, "circlesMade", { 
+          get: function()    { return !this._count ? 0 : this._count; }, 
+          set: function(val) { this._count = val; } 
+      });
+
+      CircleClass1.prototype = { 
+          area: function area() { return Math.pow(this.radius, 2) * Math.PI; } 
+      };
+
+      Object.defineProperty(CircleClass1.prototype, "radius", { 
+          get: function() { return this._radius; }, 
+          set: function(radius) { 
+                  if (!Number.isInteger(radius)) throw new Error("Circle radius must be an integer."); 
+                  this._radius = radius; 
+               } 
+      });
+
+      c1 = new CircleClass1(40);
+      c2 = new CircleClass1(50);
+      c3 = new CircleClass1(90);
+      
+      console.log(c1.radius);
+      console.log(c1.area());
+      console.log(CircleClass1.circlesMade);
+      c1.radius = 35;
+      CircleClass1.ciclesMade = 20;
+
+
+      // Example classes with ES6
+      class CircleClass2 {
+          constructor(radius) {
+              this.radius = radius;
+              CircleClass2.circlesMade++;
+          };
+
+          static draw(circle, canvas) {
+              // Canvas drawing code
+          };
+
+          static get circlesMade() {
+              return !this._count ? 0 : this._count;
+          };
+          static set circlesMade(val) {
+              this._count = val;
+          };
+
+          area() {
+              return Math.pow(this.radius, 2) * Math.PI;
+          };
+
+          get radius() {
+              return this._radius;
+          };
+          set radius(radius) {
+              if (!Number.isInteger(radius))
+                  throw new Error("Circle radius must be an integer.");
+              this._radius = radius;
+          };
+      }
+
+      c4 = new CircleClass2(35);
+      console.log(c4.radius);
+      console.log(c4.area());
+      console.log(CircleClass2.circlesMade);
+      c4.radius = 35;
+      CircleClass2.ciclesMade = 20;
+
+    });
+
+            
+  </script>
+
+
+</head>
+
+<body>
+  <p>The page</p>
+</body>
+    
+</html>
+
+

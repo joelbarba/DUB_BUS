@@ -4,6 +4,7 @@
 
   <div id="id_left_menu" style="height: 100%; width: 100%; overflow: auto;">
     <ul class="nav nav-pills nav-stacked left-menu">
+
       {{#each tracks}}
 
         <li class="active menu-bar">
@@ -73,7 +74,7 @@
 </template>
 
 
-<!-- Stops table for menu left template -->
+<!-- Stops table for menu left template (for each line) -->
 <template name="menu_stop_table">
 
   <table id="menu_stop_table_{{stops.line_num}}_{{stops.direction}}" 
@@ -100,3 +101,6 @@
   </table>
   
 </template>
+
+
+

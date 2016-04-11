@@ -44,69 +44,19 @@ Router.route('/', {
 
 });
 
-/*
-
-Router.route('/', function () {
-  this.render('navbar', { to : "navbar" });    
-  // this.render('principal_screen', { to : "main" });
-
-  // add the subscription handle to our waitlist
-  this.wait(Meteor.subscribe('all-bus-stops', null));
-
-  // this.ready() is true if all items in the wait list are ready
-
-  if (this.ready()) {
-    console.log('reaaaaaady');
-    this.render('principal_screen', { to : "main" });
-  } else {
-    console.log('waaaaiting');
-    this.render('loading_screen', { to : "main" });
-  }
-
-});
-
-
-/*
-*/
-
-// Router.route("/", {
-//   name: "menu",
-//   template: "menu_left",
-//   waitOn: function(){
-//     // waitOn makes sure that this publication is ready before rendering your template
-//     return Meteor.subscribe("all-bus-stops");
-//   },
-//   data: function() {
-//     // this will be used as the current data context in your template
-//     // return Pushups.find(/*...*/);
-//   }
-// });
 
 
 
-
-Template.hello.helpers({
-  counter: function () {
-    return Session.get('counter');
-  }
-});
-
-Template.hello.events({
-  'click button': function () {
-    // increment the counter when button is clicked
-    Session.set('counter', Session.get('counter') + 1);
-  }
-});
-
-// Meteor.subscribe('all-bus-stops');
 
 
 // ---------- TEMPLATES DATA LOAD ---------------- //
 
-// helper function that returns all available websites
-Template.prova.helpers({
-    tracks : function() {
-        return bus_tracks.find();
+
+Template.navbar.helpers({
+    admin_mode_on : function() {
+        var vm = { am: app.mode };
+
+        return vm;
     }
 });
 
@@ -114,8 +64,29 @@ Template.prova.helpers({
 
 
 
-// ---------- TEMPLATES EVENT HANDLING ---------------- //
 
+
+// ---------- TEMPLATES EVENT HANDLING ---------------- //
+Template.navbar.events({
+
+  // Assign arrow changing after trigger menu item collapsing
+  'click .js-user-toggle': function (event) {
+      app.mode = 'user';
+      $(event.target).parentsUntil('div').find('li').removeClass('active');
+      $(event.target).parent().addClass('active');
+      app.stop_markers.toggle_draggable(false);
+  },
+
+  'click .js-admin-toggle': function (event) {
+      app.mode = 'admin';
+      $(event.target).parentsUntil('div').find('li').removeClass('active');
+      $(event.target).parent().addClass('active');
+
+      app.stop_markers.toggle_draggable(true);
+
+
+  }  
+});
 
 
 

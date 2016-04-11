@@ -15,6 +15,8 @@ Template.menu_left.helpers({
           elem.to_route.track_index = app.stop_markers.get_to_track_index_by_id(elem._id);
         });
 
+
+
         return ttdata;
     }
 });

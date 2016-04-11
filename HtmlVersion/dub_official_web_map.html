@@ -1,0 +1,111 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+
+</title><link href="/Labs.EPiServer/GoogleMap/styles/episervergoesgoogle.css" rel="stylesheet" type="text/css" media="screen" /><link href="../../../Templates/Public/Styles/map_controls.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+       .header{ width:100%;}
+       .header a.left{ text-align:left; padding-left:10px; float:left;}
+       .header a.right{ text-align:right; padding-right:10px;float:right; font-weight:bolder; font-size:120%;}
+       
+    </style>
+</head>
+<body>
+    <form name="form1" method="post" action="/Examples/Google-Map/?routeNumber=1&amp;direction=IO&amp;towards=Sandymount+(St.+John%26%2339;s+Church)&amp;from=Santry+(Shanard+Rd.)" id="form1">
+<div>
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUINjYwMjQ0NzkPFgIeC1JvdXRlTnVtYmVyBQExFgICAxBkZBYEAgMPDxYCHgdWaXNpYmxlZ2RkAgsPDxYCHgtOYXZpZ2F0ZVVybAUxaHR0cDovL3d3dy5kdWJsaW5idXMuaWUvZW4vVGltZXRhYmxlcy9EaXNjbGFpbWVyL2RkZKwrePEVzVojelVPv+/Vz3Da0HwD" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCjaqtd3-8K8Qo7IAh_LdlsBVRW7zSWofs&amp;sensor=false" 
+        type="text/javascript"></script>
+      
+<script src="/Templates/Public/Scripts/extdraggableobject.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var initial_lat = 53.344104;var initial_lng = -6.267494;//<![CDATA[
+  var getStopsConfig = '/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStops&routeNumber=1&direction=O&towards=Sandymount (St. John&#39;s Church)';//]]>//<![CDATA[
+  var getStopInfoConfig = '/Labs.EPiServer/GoogleMap/gmap_conf.aspx?custompageid=1219&action=GetStopInfo';//]]>
+</script>
+
+<script src="/Labs.EPiServer/GoogleMap/jscript/gmap.js" type="text/javascript"></script>
+<script type="text/javascript">
+  if (window.attachEvent)
+  {
+      window.attachEvent('onload',load);
+      window.attachEvent('onunload',GUnload);
+  }  
+  else 
+  {
+      try
+      {
+          window.addEventListener('load',load,false);
+          window.addEventListener('unload',GUnload,false);
+      } catch(e){}
+  }
+</script>
+                
+<div>
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="2A4B12DA" />
+</div>
+       <script type="text/javascript">
+        function CloseOnReload()
+        {
+           this.close();
+        }
+    </script>
+    <div>
+    <div class="header"> <a id="btnCancel" class="left" href="javascript:__doPostBack('btnCancel','')">Close</a> &nbsp;
+        <a id="btnReverseDirection" class="right" href="javascript:__doPostBack('btnReverseDirection','')">Reverse Direction</a>
+        <input type="hidden" name="HiddenFieldDirection" id="HiddenFieldDirection" value="O" /> </div>
+    <div><h2 style=" color:White;">
+        <span id="lblTitle">Route 1 Towards: Sandymount (St. John&#39;s Church)</span></h2></div>
+	<div id="page">
+        
+<!-- The map -->
+<div id="map"></div>
+<div id="loadingMessage" style="position: absolute; top: 45%; z-index: 1000; left: 40%;
+    display: none; text-align: center;">
+    <h2>
+        Loading Data</h2>
+    <img src="/Images/ajax-loader.gif" alt="Loading..." />
+</div>
+<div id="loadingStopInfoMessage" style="position: absolute; top: 45%; z-index: 1000; left: 40%;
+    display: none; text-align: center;">
+    <h2>
+        Loading Stop Information</h2>
+    <img src="/Images/ajax-loader.gif" alt="Loading..." />
+</div>
+	</div>
+	<div style=" float:right;">
+        <a id="lnkDisclaimer" href="http://www.dublinbus.ie/en/Timetables/Disclaimer/">Disclaimer</a></div>
+	   <span id="InjectScriptLabel"></span>
+</div>
+    </form>
+    
+    <script language="javascript" type="text/javascript" src="/Templates/Public/Scripts/jquery.js"></script>
+    <script src="/mapScripts/Yslider/yslider.js" type="text/javascript"></script>
+    <!-- <script src="/mapScripts/MapType/MMapTypeControl.js" type="text/javascript"></script> -->
+    <script src="/mapScripts/Pan/pan.js" type="text/javascript"></script>
+    
+</body>
+</html>

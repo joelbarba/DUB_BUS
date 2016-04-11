@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>	
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>	
+	
+<!--    <script src="JS/lib/jquery.js"></script>-->
+<!--    <script src="JS/lib/angular.js"></script>-->
+<!--    <script src="JS/lib/angular-route.js"></script>-->
+<!--    <script src="JS/lib/angular-css.js"></script>-->
+<!--    <script data-main="scripts/main" src="scripts/require.js"></script>-->
+<!--    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script> -->
+	
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-sU_iXfll35fohb_goUYnNyqf8FSP9wg&callback=initMap"></script>
+
+	<script>
+        var map;
+        var punts = [];
+        var ruta_bus1;
+        var infowindow;
+        
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+              center: { lat: 53.34673422631909, lng: -6.250319480895996 },
+              zoom: 16,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            
+            
+            infowindow = new google.maps.InfoWindow({});
+            
+
+            map.addListener('click', function(e) {
+                var marker = new google.maps.Marker({
+                    position: e.latLng,
+                    draggable: true,
+                    map: map,
+                    index: punts.length,
+                    stop_num: 0
+                });
+                marker.addListener('click', function(elem) {
+                    infowindow.setContent(create_infoWindow(this));
+                    infowindow.open(map, marker); 
+                });
+                marker.addListener('dragend', function(elem) {
+                   console.log(this.getPosition().lat() + ', ' + this.getPosition().lng());
+                    reprint_ruta();
+                });
+                punts.push(marker);
+                
+                var path = ruta_bus1.getPath();
+                path.push(e.latLng);          
+                
+                console.log(print_coor(marker));
+                $('#llista_pos').append(print_coor(marker) + ' <br/>');
+                
+            });
+            
+
+            
+            
+            var parades = [
+                { num:  226, name: 'Shanard Road',		lat: 53.391182789780610, lng: -6.2621855735778810 },
+                { num:  228, name: 'Shanliss Rd',       lat: 53.391806602334235, lng: -6.2598037719726560 },
+                { num:  229, name: 'Shanliss Rd',       lat: 53.391352339738390, lng: -6.2565368413925170 },
+                { num:  227, name: 'Shanliss Rd',       lat: 53.391147600082090, lng: -6.2512636184692380 },
+                { num:  230, name: 'Shanliss Rd',       lat: 53.389880751560284, lng: -6.2491339445114140 },
+                { num:  231, name: 'Swords Road',		lat: 53.389234516328000, lng: -6.2459635734558105 },
+                { num: 1641, name: 'Swords Road',		lat: 53.386524700395680, lng: -6.2424176931381230 },
+                { num: 1642, name: 'Swords Road',		lat: 53.383901101509790, lng: -6.2435817718505860 }
+            ];
+            
+
+            var track_bus1 = [
+                { lat: 53.34322424945204, lng: -6.273622512817383 }, 
+                { lat: 53.34386477773271, lng: -6.270532608032227 }, 
+                { lat: 53.34271181989962, lng: -6.264309883117676 }, 
+                { lat: 53.34286554941193, lng: -6.257357597351074 }, 
+                { lat: 53.34486398263739, lng: -6.254053115844727 }, 
+                { lat: 53.34673422631909, lng: -6.250319480895996 }
+            ];            
+            
+
+            
+            
+            ruta_bus1 = new google.maps.Polyline({
+//                path: track_bus1,    // Array de coordinades
+                geodesic: true,
+                strokeColor: '#0000FF',
+                strokeOpacity: 1,
+                strokeWeight: 4
+              });
+
+            ruta_bus1.setMap(map);     // dibuixar            
+            
+            // Print all the coordenades
+            $('.js_print_button').click(function() {
+                print_all_points();
+            });
+            
+            $('.js_print_undo').click(function() {
+                punts[punts.length - 1].setMap(null);
+                punts.pop();
+                ruta_bus1.getPath().pop();
+                print_all_points();
+            })
+            
+            $('.js_reset_button').click(function() {
+                for (var t = punts.length; t > 0; t--) {
+                    punts[t - 1].setMap(null);
+                    punts.pop();
+                    ruta_bus1.getPath().pop();
+                }
+                print_all_points();
+            })
+            
+        }
+	
+ 		$(document).ready(function() {
+						
+		});
+
+        
+        
+        function create_infoWindow(marker) {
+            var cont = '<div><h4>Point number ' + marker.index + '</h4>'
+
+            if (marker.stop_num != 0) {
+                cont += '<h5><a href="#" onclick="ask_stop_num(' + marker.index + ');">STOP NUM ' + marker.stop_num + '</a></h5>';
+            }
+
+            cont += '<p><a href="#" onclick="delete_point(' + marker.index + ');">'
+            cont += 'Delete point</a></p>';
+
+            cont += '<p><a href="#" onclick="stop_point(' + marker.index + ');">'
+            cont += 'Toggle to Bus STOP</a></p>';
+            cont += '</div>';
+            return cont;
+        }        
+        
+        function delete_point(ind) {
+            punts[ind].setMap(null);
+            reprint_ruta();
+            print_all_points();
+        }
+        
+        function stop_point(ind) {
+            if (punts[ind].stop_num == 0) {
+                ask_stop_num(ind);
+                punts[ind].setIcon('./pole4.png');
+            } else {
+                punts[ind].stop_num = 0;
+                punts[ind].setIcon('');                
+                infowindow.setContent(create_infoWindow(punts[ind]));
+            }
+//            infowindow.close();
+//            infowindow.setContent(create_infoWindow(punts[ind]));
+//            infowindow.open(map, punts[ind]); 
+        }
+        
+        function ask_stop_num(ind) {
+            var res = prompt("BUS Stop Number", punts[ind].stop_num);
+            if (res != null) {
+                punts[ind].stop_num = res;
+                infowindow.setContent(create_infoWindow(punts[ind]));
+            }
+        }
+        
+        
+        function print_all_points() {
+            $('#llista_pos').html('');
+            for (var t = 0; t < punts.length; t++) {
+                $('#llista_pos').append(punts[t].map);
+                if (punts[t].map != null) {
+                    $('#llista_pos').append( print_coor(punts[t]) + ' <br/>' );
+                }
+            }
+//            $('#llista_pos').append(']},');
+        }
+        function reprint_ruta() {
+            ruta_bus1.setPath([]);
+            for (var t = 0; t < punts.length; t++) {
+                if (punts[t].map != null) { 
+                    ruta_bus1.getPath().push(punts[t].position); 
+                }
+            }            
+        }
+        
+        function print_coor(point) {
+
+            var tmp = point.position.lat().toString().split('.');
+            var int_fill = (2  - tmp[0].length < 0) ? 0 :  2 - tmp[0].length;
+            var dec_fill = (15 - tmp[1].length < 0) ? 0 : 15 - tmp[1].length;
+            var lat = '0'.repeat(int_fill) + tmp[0] + '.' + tmp[1] + '0'.repeat(dec_fill);
+            
+            var tmp = point.position.lng().toString().split('.');
+            var int_fill = (2  - tmp[0].length < 0) ? 0 :  2 - tmp[0].length;
+            var dec_fill = (15 - tmp[1].length < 0) ? 0 : 15 - tmp[1].length;
+            var lng = '0'.repeat(int_fill) + tmp[0] + '.' + tmp[1] + '0'.repeat(dec_fill);
+            
+            var obj_line = '{ lat: ' + lat + ', lng: ' + lng;
+            if (point.stop_num != 0) { obj_line += ',  stop_num: ' + point.stop_num; }
+            obj_line += ' }, ';
+
+            return obj_line;
+        }
+        
+        
+	</script>
+
+	<style>
+        html, body {
+            height: 95%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 98%;
+            margin: 5px;
+            border: 1px solid black;
+        }
+        #llista_pos  {
+            font-size: x-small;
+            font-family: 'Lucida Console', Monaco, monospace;
+        }
+	</style>
+</head>
+
+<body>
+  <div class="container-fluid">
+      <h1>BUS map</h1>
+      <div class="row">
+          <div style="border: 2px solid red; height: 800px;" class="col-md-3">
+              <div style="height: 100%; width: 100%; overflow: auto;">
+                  <button class="btn js_reset_button">RESET</button>
+                  <button class="btn js_print_button">PRINT DATA</button>
+                  <button class="btn js_print_undo">UNDO</button>
+                <p id="llista_pos"></p>
+
+              </div>
+          </div>    
+          <div style="border: 2px solid red; height: 800px;" class="col-md-9">
+            <div id="map"></div>
+          </div>    
+      </div>
+  </div>
+</body>
+    
+</html>

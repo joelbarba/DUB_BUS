@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>	
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>	
+	
+<!--    <script src="JS/lib/jquery.js"></script>-->
+<!--    <script src="JS/lib/angular.js"></script>-->
+<!--    <script src="JS/lib/angular-route.js"></script>-->
+<!--    <script src="JS/lib/angular-css.js"></script>-->
+<!--    <script data-main="scripts/main" src="scripts/require.js"></script>-->
+<!--    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script> -->
+	
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-sU_iXfll35fohb_goUYnNyqf8FSP9wg&callback=initMap"></script>
+    <script src="js/lib/handlebars-v3.0.3.js"></script>
+
+<!--    <script src="js/bus_tracks.js"></script>-->
+    <script src="js/bus_editor.js"></script>
+
+	<style>
+      html, body {
+        height: 95%;
+        margin: 0;
+        margin-top: 30px;
+        padding: 0;
+      }
+      #map {
+        height: 98%;
+        margin: 5px;
+        border: 1px solid black;
+      }
+      .brand_icon_navbar {
+        max-height: 20px;
+        max-width: 20px;
+      }
+      .collapse-arrow {
+        margin-left: 5px;
+      }
+      
+      .menu-custom-item {
+        margin-left: 15px;
+      }
+      
+      .menu-bar { background-color: #F0FAFF; }
+      .submenu-bar { background-color: #D0E6FF; }
+      .stop-table-menu-div { background-color: #FFFFF9; margin-top: 2px; }
+      
+	</style>
+</head>
+
+<body>
+  <div class="container-fluid">
+      
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">
+<!--            <img alt="Brand" class="brand_icon_navbar" src="https://upload.wikimedia.org/wikipedia/commons/4/46/Generic_Feed-icon.svg">-->
+          </a>        
+          <a class="navbar-brand" href="#">Dublin BUS Map</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li id="nav_bar_home_link" class="active"><a href="/principal">Home</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>      
+
+      
+      
+      <div class="row">
+          <div style="border: 2px solid red; height: 800px;" class="col-md-3">
+              <div id="id_left_menu" style="height: 100%; width: 100%; overflow: auto;">
+                <ul class="nav nav-pills nav-stacked left-menu">
+              
+
+                  <li class="active menu-bar">
+                      <a href="#" id="menu_collapser_1" 
+                         data-item-to-collapse-id="#menu_item_1"
+                         class="menu-custom-collapsator" 
+                         data-line-num="1" >
+                          <input class="text-left" style="margin-right: 14px;" type="checkbox">
+                          Line 1<span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                      </a>
+                      <ul id="menu_item_1" 
+                          class="menu-custom-item nav nav-pills nav-stacked collapse left-submenu left-menu" 
+                          style="margin-left:15px;" 
+                          data-collapse-controler-id="#menu_collapser_1">
+                        <li>
+                          <a href="#" id="submenu_collapser_1_1" 
+                             data-item-to-collapse-id="#submenu_item_1_1"
+                             class="submenu-custom-collapsator" 
+                             data-line-num="1" 
+                             data-line-direction="from">
+                              <input class="text-left" class="text-left" style="margin-right: 10px;" type="checkbox">
+                              Line 1: From <strong>Santry</strong> towards <strong>Sandymount</strong>
+                              <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                          </a>
+                          <div id="submenu_item_1_1" 
+                               data-collapse-controler-id="#submenu_collapser_1_1"
+                               class="menu-custom-item nav nav-stacked collapse left-submenu">
+                              
+                              <table id="menu_table_1_1" class="table table-bordered table-hover table-condensed ">
+                                <thead>
+                                    <tr class="warning"> 
+                                        <th class="text-center"> <input type="checkbox" class="js_stop_check_all"></th> 
+                                        <th class="text-center">Num</th> 
+                                        <th>Stop name</th> 
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                              </table>
+                          </div>
+                        </li>
+                            
+                            
+                        <li>
+                          <a href="#" id="submenu_collapser_1_2" 
+                             data-item-to-collapse-id="#submenu_item_1_2"
+                             class="submenu-custom-collapsator" 
+                             data-line-num="1" 
+                             data-line-direction="to">
+                              <input class="text-left " class="text-left" style="margin-right: 10px;" type="checkbox">
+                              Line 1: From <strong>Sandymount</strong> towards <strong>Santry</strong>
+                              <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                          </a>
+                          <div id="submenu_item_1_2" 
+                               data-collapse-controler-id="#submenu_collapser_1_2"
+                               class="menu-custom-item nav nav-stacked collapse left-submenu">
+                              <table id="menu_table_1_1_rev" class="table table-bordered table-hover table-condensed ">
+                                <thead>
+                                    <tr class="warning"> 
+                                        <th class="text-center"> <input type="checkbox" class="js_stop_check_all"></th> 
+                                        <th class="text-center">Num</th> 
+                                        <th>Stop name</th> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                              </table>
+                          </div>
+                        </li>                            
+
+                      </ul>
+                  </li>                  
+
+                  <li>
+                      <a href="#" id="menu_collapser_2" 
+                         data-item-to-collapse-id="#menu_item_2"
+                         class="menu-custom-collapsator" 
+                         data-line-num="2">
+                          <input class="text-left" style="margin-right: 14px;" type="checkbox">Line 2<span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                      </a>
+                      <ul id="menu_item_2" 
+                          class="menu-custom-item nav nav-pills nav-stacked collapse left-submenu left-menu" 
+                          style="margin-left:15px;" 
+                          data-collapse-controler-id="#menu_collapser_2">
+                        <li>
+                          <a href="#" 
+                             id="submenu_collapser_2_1" 
+                             data-item-to-collapse-id="#submenu_item_2_1"
+                             class="submenu-custom-collapsator" 
+                             data-line-num="2" 
+                             data-line-direction="from">
+                              <input class="text-left " class="text-left" style="margin-right: 10px;" type="checkbox">
+                              Line 2: From <strong>xxxxxxx</strong> towards <strong>xxxxxxxx</strong>
+                              <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                          </a>
+                          <div id="submenu_item_2_1" 
+                               data-collapse-controler-id="#submenu_collapser_2_1"
+                               class="menu-custom-item nav nav-stacked collapse left-submenu">
+                                here must be the table 2_1
+                          </div>
+                        </li>
+                            
+                            
+                        <li>
+                          <a href="#" 
+                             id="submenu_collapser_2_2" 
+                             data-item-to-collapse-id="#submenu_item_2_2"
+                             class="submenu-custom-collapsator" 
+                             data-line-num="2" 
+                             data-line-direction="to">
+                              <input class="text-left " class="text-left" style="margin-right: 10px;" type="checkbox">
+                              Line 2: From <strong>xxxxxxxx</strong> towards <strong>xxxxxxxxx</strong>
+                              <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                          </a>
+                          <div id="submenu_item_2_2" 
+                               data-collapse-controler-id="#submenu_collapser_2_2"
+                               class="menu-custom-item nav nav-stacked collapse left-submenu">
+                                here must be the table 2_2 
+                          </div>
+                        </li>                            
+
+                      </ul>
+                  </li>                  
+
+                    
+                </ul>  
+              </div>
+          </div>    
+          <div style="border: 2px solid red; height: 800px;" class="col-md-9">
+            <div id="map"></div>
+          </div>    
+      </div>
+  </div>
+    
+    
+    
+
+
+  <!------------ Templates -------------->
+
+  <!-- Menu list template -->
+  <script id="menu-template" type="text/x-handlebars-template">
+      <button id="bshow_obj"  value="">SHOW STOPS OBJ</button>
+      <button id="bshow_obj2" value="">SHOW TRACKS OBJ</button>
+      <div id="id_left_menu" style="height: 100%; width: 100%; overflow: auto;">
+        <ul class="nav nav-pills nav-stacked left-menu">
+          {{#each bus_tracks}}
+
+            <li class="active menu-bar">
+              <a href="#" id="menu_collapser_{{line_num}}" 
+                 data-item-to-collapse-id="#menu_item_{{line_num}}"
+                 class="menu-custom-collapsator" 
+                 data-line-num="{{line_num}}" >
+                  <input class="text-left" style="margin-right: 14px;" type="checkbox">
+                  Line {{line_num}}<span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+              </a>
+              <ul id="menu_item_{{line_num}}"
+                  class="menu-custom-item nav nav-pills nav-stacked collapse left-submenu left-menu"
+                  data-collapse-controler-id="#menu_collapser_{{line_num}}">
+                <li>
+                  <a href="#" id="submenu_collapser_{{line_num}}_1" 
+                     data-item-to-collapse-id="#submenu_item_{{line_num}}_1"
+                     class="submenu-custom-collapsator submenu-bar" 
+                     data-line-num="{{line_num}}" 
+                     data-line-direction="from">
+                      <input class="text-left" class="text-left" style="margin-right: 10px;" type="checkbox">
+                      Line {{line_num}}: {{from_route.name}}
+                      <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                  </a>
+                  <div id="submenu_item_{{line_num}}_1" 
+                       data-collapse-controler-id="#submenu_collapser_{{line_num}}_1"
+                       data-line-num="{{line_num}}"
+                       data-direction="from"
+                       class="menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
+
+                        <!-- Here the table from -->
+
+                  </div>
+                </li>
+
+
+                <li>
+                  <a href="#" id="submenu_collapser_{{line_num}}_2" 
+                     data-item-to-collapse-id="#submenu_item_{{line_num}}_2"
+                     class="submenu-custom-collapsator submenu-bar" 
+                     data-line-num="{{line_num}}" 
+                     data-line-direction="to">
+                      <input class="text-left " class="text-left" style="margin-right: 10px;" type="checkbox">
+                      Line {{line_num}}: {{to_route.name}}
+                      <span class="collapse-arrow glyphicon glyphicon-triangle-right"></span>
+                  </a>
+                  <div id="submenu_item_{{line_num}}_2" 
+                       data-collapse-controler-id="#submenu_collapser_{{line_num}}_2"
+                       data-line-num="{{line_num}}"
+                       data-direction="to"
+                       class="menu-custom-item menu-stops-content nav nav-stacked collapse left-submenu ">
+
+                        <!-- Here the table to -->  
+                    
+                  </div>
+                </li>                            
+
+              </ul>
+          </li>
+
+          {{/each}}
+        </ul>
+      </div>
+    
+  </script>
+
+  
+  
+ <!-- Stops table for menu template -->
+  <script id="menu-stop-table-template" type="text/x-handlebars-template">
+    
+      <table id="menu_stop_table_{{line_num}}_{{direction}}" 
+             class="table table-bordered table-hover table-condensed stop-table-menu-div"
+             data-line-num="{{line_num}}"
+             data-direction="{{direction}}">
+        <thead>
+            <tr class="warning" data-line-num="{{line_num}}" data-direction="{{direction}}"> 
+                <th class="text-center"> <input type="checkbox" class="js_stop_check_all"></th> 
+                <th class="text-center">Num</th> 
+                <th>Stop name</th> 
+            </tr>
+        </thead>
+        <tbody>
+          
+          {{#each stops}}
+            <tr data-stop-num="{{num}}">
+              <td class="text-center"> <input class="js_stop_check" type="checkbox"> </td>
+              <td class="text-center"> {{num}} </td>
+              <td> <a class="js_stop_link" href="#"> {{name}} </a></td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    
+  </script>  
+  
+  
+  <!-- Stop marker info -->
+  <script id="stop-marler-info-template" type="text/x-handlebars-template">
+      
+      <div>
+        <h4>{{ title }}</h4>
+        <p> {{ gname }} </p>
+        <p> <b>Stop lines:</b> {{#each line_stops}}{{#ifNotPrimer @index}}{{/ifNotPrimer}} {{num}}{{/each}} </p>
+        <p> <a target="_blank" href="{{dub_bus_url}}">DublinBus map</a> <br/>
+            <a target="_blank" href="{{gmaps_url}}">View on google maps</a>
+        </p>
+      </div>
+    
+  </script>    
+    
+</body>
+    
+</html>

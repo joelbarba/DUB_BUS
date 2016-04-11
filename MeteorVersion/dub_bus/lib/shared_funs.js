@@ -22,7 +22,7 @@ shared_fun = function() {
 
 
 // This is to replicate the data of the DB Collections, crossing bus_stops and bus_tracks
-data_replication2 = function() {
+data_replication = function() {
 
   // Truncate all replicated data
   bus_stops.find({}).forEach(function(bus_stop) {
@@ -40,13 +40,13 @@ data_replication2 = function() {
     // Loop all track points, seeking the stops ones
 
     // From track
-    bus_line.from_route.track.forEach(function(track_point) {
-      fun_set_stop_on_track_point(track_point, bus_line.from_route, bus_line, 'from');
+    bus_line.from_route.track.forEach(function(track_point, ind) {
+      fun_set_stop_on_track_point(track_point, bus_line.from_route, bus_line, 'from', ind);
     });
 
     // To track
-    bus_line.to_route.track.forEach(function(track_point) {
-      fun_set_stop_on_track_point(track_point, bus_line.to_route, bus_line, 'to');
+    bus_line.to_route.track.forEach(function(track_point, ind) {
+      fun_set_stop_on_track_point(track_point, bus_line.to_route, bus_line, 'to', ind);
     });
 
 
@@ -71,7 +71,7 @@ data_replication2 = function() {
 };
 
 
-var fun_set_stop_on_track_point = function(track_point, route, bus_line, direction) {
+var fun_set_stop_on_track_point = function(track_point, route, bus_line, direction, ind) {
 
 if (track_point.hasOwnProperty('stop_num')) {
 
@@ -90,8 +90,10 @@ if (track_point.hasOwnProperty('stop_num')) {
 
     // Add the line to the stop
     bus_stop.user_lines.push({
-      line_num  : bus_line.line_num, 
-      direction : direction
+      line_num    : bus_line.line_num, 
+      direction   : direction,
+      line_id     : bus_line._id,
+      track_index : ind
     });
     bus_stops.update({ _id : bus_stop._id }, bus_stop);
   }
