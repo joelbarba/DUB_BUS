@@ -12,6 +12,7 @@ this.app = (function() {
   this.infowindow  = null;  // info window attatched to each marker of the map
   this.all_markers = [];    // Array to store each marker on the map
   this.mode = 'user';
+  this.track_edit = '';
   
   // this.map_loaded = false;
 
@@ -127,7 +128,127 @@ this.app = (function() {
           if (direction == 'to')    bus_tracks[ind].to_route.map_polyline.setMap(null);
       }
   };
+
+
+  // Show the JSON object (bus_stops) on the screen
+  this.show_data_stops = function() {
+
+    var stops = bus_stops.find({}, {num:1}).fetch();
+
+    // for (var t = 0; t < col.length; t++) {
+    //   delete col[t]._id;
+    //   col[t].user_lines = new Array(0); // replicated obj
+    // }
+
+    var s = '\n';
+    var cont = '';
   
+    for (var t = 0; t < stops.length; t++) {
+      cont += 'bus_stops.insert(' + s;
+      cont += '  { num          : '   + stops[t].num   + ',' + s;
+      cont += '    name         : "'  + stops[t].name  + '",' + s;
+      cont += '    user_lines   : [],' + s;
+      cont += '    gname        : "' + stops[t].gname + '",' + s;
+      cont += '    pos          : { lat: ' + stops[t].pos.lat + ', ';
+      cont +=                      'lng: ' + stops[t].pos.lng + ' },' + s;
+      cont += '    gmaps_url    : "' + stops[t].gmaps_url + '"' + s;
+      cont += '  });';
+      // if (t < stops.length - 1) cont += ',';
+      cont += s;
+    }
+    // cont += '];';
+
+    // bss = bss.replace(/\n/g, '<br/>');
+    // $('#map').css('overflow-y', 'scroll');
+    $('#map').html('<textarea style="width: 100%; height: 100%; font-family: monospace; font-size: x-small;">' 
+                    // + 'bus_stops = ' + JSON.stringify(col, null, 1)
+                    + cont
+                    + '</textarea>');
+  }
+  
+
+  // Show the JSON object (bus_tracks) on the screen
+  this.show_data_lines = function() {
+
+    var lines = bus_tracks.find({}, {line_num:1}).fetch();
+
+    var s = '\n';
+    var c = ',';
+    var cont = '';
+    for (var t = 0; t < lines.length; t++) {
+      cont += 'bus_tracks.insert(' + s;
+      cont += '{ line_num   : '   + lines[t].line_num + c + s;
+      cont += '  name       : "' + lines[t].name + '",' + s;
+      cont += '  from_route : {' + s;
+      cont += '    name         : "' + lines[t].from_route.name + '",' + s;
+      cont += '    dub_bus_url  : "' + lines[t].from_route.dub_bus_url + '",' + s;
+      cont += '    stop_ini     : '  + lines[t].from_route.stop_ini + c + s;
+      cont += '    stop_end     : '  + lines[t].from_route.stop_end + c + s;
+      cont += '    stops        : []' + c + s;
+      cont += '    track        : [' + s;
+      for (var q = 0; q < lines[t].from_route.track.length; q++) {
+          cont += '    { lat: ' + this.trim_coord(lines[t].from_route.track[q].lat);
+          cont +=     ', lng: ' + this.trim_coord(lines[t].from_route.track[q].lng);
+          if (lines[t].from_route.track[q].hasOwnProperty('stop_num')) {
+              cont += ',  stop_num: ' + lines[t].from_route.track[q].stop_num;
+          }
+          cont += ' }';
+          if (q < lines[t].from_route.track.length - 1) cont += c;
+          cont += s;
+      }
+      cont += '    ]' + s;
+      cont += '  },' + s;
+      
+      cont += '  to_route       : {' + s;
+      cont += '    name         : "' + lines[t].from_route.name + '",' + s;
+      cont += '    dub_bus_url  : "' + lines[t].from_route.dub_bus_url + '",' + s;
+      cont += '    stop_ini     : '  + lines[t].from_route.stop_ini + c + s;
+      cont += '    stop_end     : '  + lines[t].from_route.stop_end + c + s;
+      cont += '    stops        : []' + c + s;
+      cont += '    track        : [' + s;
+      for (var q = 0; q < lines[t].to_route.track.length; q++) {
+          cont += '    { lat: ' + this.trim_coord(lines[t].to_route.track[q].lat);
+          cont +=     ', lng: ' + this.trim_coord(lines[t].to_route.track[q].lng);
+          if (lines[t].to_route.track[q].hasOwnProperty('stop_num')) {
+              cont += ',  stop_num: ' + lines[t].to_route.track[q].stop_num;
+          }
+          cont += ' }';
+          if (q < lines[t].to_route.track.length - 1) cont += c;
+          cont += s;
+      }
+      cont += '    ]' + s;
+      cont += '  }' + s;
+      
+      cont += '})' + s;
+    }
+
+
+
+    $('#map').html('<textarea style="width: 100%; height: 100%; font-family: monospace; font-size: x-small;">' 
+                    // + 'bus_stops = ' + JSON.stringify(col, null, 1)
+                    + cont
+                    + '</textarea>');
+  }
+
+
+  this.trim_coord = function(val) {
+    
+    var tmp = val.toString().split('.');
+    if (tmp.length == 2) {
+      var int_fill = (2  - tmp[0].length < 0) ? 0 :  2 - tmp[0].length;
+      var dec_fill = (16 - tmp[1].length < 0) ? 0 : 16 - tmp[1].length;
+      var edit_val = '0'.repeat(int_fill) + tmp[0] + '.' + tmp[1] + '0'.repeat(dec_fill);
+      
+      return edit_val;
+    } else {
+      return '0';
+    }
+  }
+
+
+
+
+
 
 
 
@@ -225,7 +346,13 @@ this.stop_markers = (function() {
         // Loop all lines of the stop, and update each one
         stop.user_lines.forEach(function(elem) { 
           console.log(elem); 
-          app.map_polylines.move_point(elem.line_num, elem.direction, elem.line_id, elem.track_index, stop.pos);
+          var point_info = {
+            line_id     : elem.line_id,
+            line_num    : elem.line_num,
+            direction   : elem.direction,
+            track_index : elem.track_index
+          }
+          app.map_polylines.move_point(point_info, stop.pos);
         });
         
       });
@@ -290,9 +417,10 @@ this.map_polylines = (function() {
 
 
   // Return the marker bound to the stop which has this stop NUM
-  this.get_track_by_num = function(line_num) {
+  this.get_track_by_num = function(line_num, direction) {
+
     for (var t = 0; t < this.tracks.length; t++) {
-      if (this.tracks[t].track_info.line_num == line_num) { return this.tracks[t]; break; }
+      if (this.tracks[t].track_info.line_num == line_num && this.tracks[t].track_info.direction == direction) { return this.tracks[t]; break; }
     }
     return null;
   };
@@ -324,7 +452,10 @@ this.map_polylines = (function() {
   };
 
   this.show_track_by_index = function(ind) {
-    if (this.tracks[ind]) this.tracks[ind].setMap(map);
+    if (this.tracks[ind]) {
+      this.tracks[ind].setMap(map);
+      this.set_track_markers();
+    }
   };
 
   this.hide_track_by_index = function(ind) {
@@ -363,7 +494,8 @@ this.map_polylines = (function() {
             line_id   : bus_track._id,
             line_num  : bus_track.line_num,
             direction : 'to',
-            name      : bus_track.to_route.name
+            name      : bus_track.to_route.name,
+            markers   : []
           }
         });
       this.tracks.push(track_obj);
@@ -371,25 +503,100 @@ this.map_polylines = (function() {
     });
   };
 
-  this.move_point = function(line_num, direction, line_id, track_index, pos) {
-    var track = this.get_track_by_id(line_id, direction);
+
+  this.set_track_markers = function() {
+
+    if (app.track_edit == 'points') {
+
+      var track = this.get_track_by_num(1, 'to');
+      // var track = this.tracks[1];
+      if (track) { 
+
+        track.getPath().forEach(function(track_point, ind) {
+
+            // Check if it is a bus stop
+            // var stop = null;
+            // var icon = null;
+            var line_point = bus_tracks.findOne({_id: track.track_info.line_id}).to_route.track[ind];
+            if (line_point.hasOwnProperty('stop_num')) {
+              // stop = line_point.stop_num;
+              // icon = 'pole4.png';
+            }
+
+            // Create a marker to move the point
+            var point = new google.maps.LatLng({ lat: track_point.lat(), lng: track_point.lng() }); 
+            var point_marker = 
+                new google.maps.Marker({
+                    position   : point,
+                    title      : 'Point number ' + ind,
+                    // icon       : icon,
+                    draggable  : true,
+                    // animation  : google.maps.Animation.DROP,
+                    point_info  : {
+                      line_id     : track.track_info.line_id,
+                      line_num    : track.track_info.line_num,
+                      direction   : track.track_info.direction,
+                      track_index : ind
+                      // stop_num    : stop
+                    }
+                });
+
+
+
+            // Function to launch after drag a stop point
+            point_marker.addListener('dragend', function(elem) {
+              console.log(elem);
+              console.log(this);
+              var pos = {
+                lat: elem.latLng.lat(),
+                lng: elem.latLng.lng()
+              }
+              move_point(this.point_info, pos);
+            });
+
+            if (!line_point.hasOwnProperty('stop_num')) {
+              point_marker.setMap(map);
+            }
+
+            track.track_info.markers.push(point_marker)
+
+        });
+
+
+
+      }
+
+    }
+
+  };
+
+
+  // point_info  : {
+  //   line_id     : xxx,
+  //   line_num    : xxx,
+  //   direction   : xxx,
+  //   track_index : xxx
+  // },
+  // pos { lat: 99, lng: 99 }
+  this.move_point = function(point_info, pos) {
+    var track = this.get_track_by_id(point_info.line_id, point_info.direction);
     if (track) { 
 
       // Change the polyline in the map
       // var point = path.getAt(track_index);
       var point = new google.maps.LatLng({lat: pos.lat, lng: pos.lng}); 
       var path = track.getPath();
-      path.setAt(track_index, point);
+      path.setAt(point_info.track_index, point);
 
       // Update the position in DB
-      var line = bus_tracks.findOne({_id: line_id});
-      if (direction == 'from') {
-        line.from_route.track[track_index].lat = pos.lat;
-        line.from_route.track[track_index].lng = pos.lng;
+      var line = bus_tracks.findOne({_id: point_info.line_id});
+      if (point_info.direction == 'from') {
+        line.from_route.track[point_info.track_index].lat = pos.lat;
+        line.from_route.track[point_info.track_index].lng = pos.lng;
         bus_tracks.update({_id: line._id}, { $set: { from_route: line.from_route }});
       } else {
-        line.to_route.track[track_index].lat = pos.lat;
-        line.to_route.track[track_index].lng = pos.lng;
+        line.to_route.track[point_info.track_index].lat = pos.lat;
+        line.to_route.track[point_info.track_index].lng = pos.lng;
         bus_tracks.update({_id: line._id}, { $set: { to_route: line.to_route }});        
       }
 

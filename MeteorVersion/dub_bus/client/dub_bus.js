@@ -72,6 +72,7 @@ Template.navbar.events({
   // Assign arrow changing after trigger menu item collapsing
   'click .js-user-toggle': function (event) {
       app.mode = 'user';
+      app.track_edit = '';
       $(event.target).parentsUntil('div').find('li').removeClass('active');
       $(event.target).parent().addClass('active');
       app.stop_markers.toggle_draggable(false);
@@ -79,13 +80,38 @@ Template.navbar.events({
 
   'click .js-admin-toggle': function (event) {
       app.mode = 'admin';
+      app.track_edit = '';
       $(event.target).parentsUntil('div').find('li').removeClass('active');
       $(event.target).parent().addClass('active');
 
       app.stop_markers.toggle_draggable(true);
+  },
+
+  'click .js-admin-route-edit': function (event) {
+      app.track_edit = 'points';
+      $(event.target).parentsUntil('div').find('li').removeClass('active');
+      $(event.target).parent().addClass('active');
+
+  },
+
+  'click .js-admin-show-data-stops': function (event) {
+      $(event.target).parentsUntil('div').find('li').removeClass('active');
+      $(event.target).parent().addClass('active');
+
+      app.show_data_stops();
+
+  },
+  'click .js-admin-show-data-lines': function (event) {
+      $(event.target).parentsUntil('div').find('li').removeClass('active');
+      $(event.target).parent().addClass('active');
+
+      app.show_data_lines();
+
+  },
+  
 
 
-  }  
+
 });
 
 
